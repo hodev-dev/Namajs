@@ -1,31 +1,63 @@
-import { div, h1, mount } from './lib/Compose.js';
+import { Widget, mount } from './lib/widget.js';
 import './css/tailwind.css';
-import List from './pages/List.js';
-import _state from './state/state.js';
+import AppState from './state/state.js';
+import HotReload from './lib/HotReload';
 
-let [state, setState, changes] = _state;
+let [state, setState, changes, watch] = AppState;
 
-if (module && module.hot) {
-	module.hot.accept();
-	module.hot.dispose((data) => {
-		data.state = state;
-	});
-	if (module.hot.data) {
-		state = module.hot.data.state;
-	}
-}
+HotReload(state, module);
 
-const Page = () => div({
+watch('page.data', () => { });
+
+const Page = () => Widget({
+	type: "DIV",
+	state: AppState,
 	props: () => ({
 		id: "container",
-		className: "flex flex-wrap flex-col bg-white text-blueGray-500 min-h-screen h-auto w-full text-6xl content-start",
+		className: "w-full bg-gray-100 min-h-screen h-auto flex-col",
 	}),
-	childWatch: () => ['page.data'],
-	click: ({ target }) => target.classList.add('bg-blue-400'),
-	child: ({ index, }) => state.page.data.map((item, row) => {
-		return List({ item })
-	})
+	child: ({ index, _state }) => [
+		Widget({
+			type: 'DIV',
+			props: () => ({
+				className: "flex flex-row w-ful h-16 bg-white shadow"
+			}),
+			child: ({ index, _state }) => [
+				Widget({
+					type: 'H1',
+					props: () => ({
+						className: "flex w-full w-8/12 h-16 all-center"
+					}),
+					watch: () => ['page.count'],
+					child: ({ index }) => [_state.page.count]
+				}),
+				Widget({
+					type: 'H1',
+					props: () => ({
+						className: "flex w-full w-4/12 h-16 all-center"
+					}),
+					events: () => ({
+						click: ({ }) => setState((state) => state.page.count += 800)
+					}),
+					watch: () => ['page.count'],
+					child: ({ index }) => [_state.page.count]
+				})
+			]
+		}),
+		Widget({
+			type: 'DIV',
+			props: () => ({
+				className: 'w-8/12 h-6/12 border'
+			}),
+			child: ({ index, _state }) => [
+				Widget({
+					type: 'h1',
+					props: () => ({}),
+					child: ({ index }) => ["test"]
+				})
+			]
+		})
+	]
 });
 
 mount(Page, 'root');
-

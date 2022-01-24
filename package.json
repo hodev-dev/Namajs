@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx webpack server",
+    "dev": "npx webpack server --config webpack.config.js",
+    "ssr": "npx webpack build --config webpack.ssr.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -17,9 +18,12 @@
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.0.12",
     "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.7.2"
+    "webpack-dev-server": "^4.7.2",
+    "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
+    "canvas": "^2.9.0",
+    "jsdom": "^19.0.0",
     "uuid": "^8.3.2"
   }
 }

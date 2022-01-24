@@ -1,5 +1,5 @@
 import event from "./Event.js";
-import ObjectObserver from "./ObjectObserver.js";
+import ObjectObserver from "./observer.js";
 
 const State = (_init) => {
     let { proxy, changes } = ObjectObserver(_init);
@@ -25,7 +25,8 @@ const State = (_init) => {
     return [
         proxy,
         setState,
-        changes
+        changes,
+        watch
     ]
 }
 

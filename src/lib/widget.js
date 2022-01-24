@@ -1,13 +1,12 @@
-import { set, update } from "lodash";
 import event from "./Event.js";
 import { updateAttribute, replaceChild, unshift, push, shift, pop } from "./dom.js";
 
 const index = new Map();
 
-export const div = (args) => {
-    const { props, child, propsWatch, childWatch } = args;
+export const Widget = (args) => {
+    const { type, props, events, child, propsWatch, watch, state } = args;
 
-    const el = document.createElement("div");
+    const el = document.createElement(type);
 
     if (props().className) {
         el.className = props().className;
@@ -15,14 +14,18 @@ export const div = (args) => {
     if (props().id) {
         el.id = props().id;
     }
-    if (args.click) {
-        el.addEventListener("click", (event) => {
-            args.click(event, { props, div, el });
-        });
+    if (events) {
+        Object.keys(events()).forEach((key) => {
+            el.addEventListener(key, (event) => {
+                events()[key](event);
+            });
+        })
     }
+
     if (args.onCreate) {
         args.onCreate();
     }
+
     if (args.test) {
         args.test();
     }
@@ -33,8 +36,8 @@ export const div = (args) => {
         });
     }
 
-    if (childWatch !== undefined) {
-        event.subscribe(childWatch(), (data) => {
+    if (watch !== undefined) {
+        event.subscribe(watch(), (data) => {
             if (data && data.change) {
 
                 // rebuild entire child
@@ -64,9 +67,6 @@ export const div = (args) => {
             }
         });
     }
-    requestAnimationFrame((data) => {
-        index.set(el.id, el);
-    });
 
     if (args.test !== undefined) {
         args.test();
@@ -76,9 +76,13 @@ export const div = (args) => {
         el.textContent = props().textContent;
     }
 
+    if (state !== undefined) {
+        index.set('state', state);
+    }
 
+    const [_state, _setState] = index.get('state');
 
-    el.append(...child({ index }));
+    el.append(...child({ index, _state, _setState }));
     return el;
 };
 

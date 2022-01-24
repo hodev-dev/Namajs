@@ -1,19 +1,9 @@
-import State from '../lib/State.js';
+import State from '../lib/state.js';
 
-let _state = State({
+let AppState = State({
     page: {
-        data: [
-            { id: 1, name: "1" },
-            { id: 2, name: "2" },
-            { id: 3, name: "3" },
-            { id: 4, name: "4" },
-            { id: 5, name: "5" },
-            { id: 6, name: "6" },
-            { id: 7, name: "7" },
-            { id: 8, name: "8" },
-        ],
-        count: 400
+        count: 1500
     }
 });
 
-export default _state;
+export default AppState;
